@@ -1,8 +1,5 @@
-using System.Globalization;
-using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 using SalesRecordCalculator.DomainLogic;
-using SalesRecordCalculator.Models;
 
 namespace SalesRecordCalculator.Controllers
 {
@@ -27,7 +24,7 @@ namespace SalesRecordCalculator.Controllers
                 var response = aggregateCalculator.CalculateAggregate();
                 return Ok(response);
             }
-            catch (DomainLogic.ValidationException ex)
+            catch (ValidationException ex)
             {
                 return BadRequest(ex.Message);
             }

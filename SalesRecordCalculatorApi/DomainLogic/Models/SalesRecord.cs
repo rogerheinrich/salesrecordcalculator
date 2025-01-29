@@ -32,13 +32,13 @@ public class SalesRecord
     public string? OrderPriority { get; set; }
 
     [Name("Order Date")]
-    public DateTime OrderDate { get; set; }
+    public required DateTime OrderDate { get; set; }
 
     [Name("Order ID")]
     public BigInteger OrderId { get; set; }
 
     [Name("Ship Date")]
-    public DateTime ShipsDate { get; set; }
+    public DateTime ShipDate { get; set; }
 
     [Name("Units Sold")]
     public int UnitsSold { get; set; }
@@ -47,10 +47,10 @@ public class SalesRecord
     public decimal UnitPrice { get; set; }
 
     [Name("Unit Cost")]
-    public decimal UnitCost { get; set; }
+    public required decimal UnitCost { get; set; }
 
     [Name("Total Revenue")]
-    public decimal TotalRevenue { get; set; }
+    public required decimal TotalRevenue { get; set; }
 
     [Name("Total Cost")]
     public decimal TotalCost { get; set; }

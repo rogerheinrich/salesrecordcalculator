@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesRecordCalculatorApi", "SalesRecordCalculatorApi\SalesRecordCalculatorApi.csproj", "{91F9DE73-9FA6-4F31-8B8B-8FADD097ED72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesRecordCalculatorApiTests", "SalesRecordCalculatorApiTests\SalesRecordCalculatorApiTests.csproj", "{64B6AFE5-5A08-4D72-9492-5F8D3CDEB603}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{91F9DE73-9FA6-4F31-8B8B-8FADD097ED72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91F9DE73-9FA6-4F31-8B8B-8FADD097ED72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91F9DE73-9FA6-4F31-8B8B-8FADD097ED72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91F9DE73-9FA6-4F31-8B8B-8FADD097ED72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64B6AFE5-5A08-4D72-9492-5F8D3CDEB603}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64B6AFE5-5A08-4D72-9492-5F8D3CDEB603}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64B6AFE5-5A08-4D72-9492-5F8D3CDEB603}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64B6AFE5-5A08-4D72-9492-5F8D3CDEB603}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
