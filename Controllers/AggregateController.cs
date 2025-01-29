@@ -1,25 +1,36 @@
+using System.Globalization;
+using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
+using SalesRecordCalculator.DomainLogic;
+using SalesRecordCalculator.Models;
 
 namespace SalesRecordCalculator.Controllers
 {
     [Route("/[controller]")]
     [ApiController]
-    public class AggregateController : ControllerBase
+    public class AggregateController(
+        ISalesRecordReader salesRecordReader,
+        IAggregateCalculator aggregateCalculator
+    ) : ControllerBase
     {
         [HttpPost("calculatefromcsv")]
         public IActionResult calculateFromCsv(IFormFile csvFile)
         {
-            if (csvFile == null || csvFile.Length == 0)
+            try
             {
-                return BadRequest("No file uploaded.");
-            }
+                var regionCounts = new Dictionary<string, int>();
+                salesRecordReader.ProcessSalesRecords(csvFile, record =>
+                {
+                    aggregateCalculator.AddRecordToTally(record);
+                });
 
-            using (var reader = new StreamReader(csvFile.OpenReadStream()))
-            {
-                var currentRecord = reader.ReadLine();
-                //todo: iterate through records and calculate the aggregates
+                var response = aggregateCalculator.CalculateAggregate();
+                return Ok(response);
             }
-            return Ok("File uploaded successfully.");
+            catch (DomainLogic.ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
