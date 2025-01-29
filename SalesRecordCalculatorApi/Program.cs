@@ -7,9 +7,6 @@ DIContainer.AddDependencies(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
-//Configure Global Exception Handler
-//ExceptionHandler.Configure( app, app.Logger );
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
