@@ -1,7 +1,15 @@
+using SalesRecordCalculator.DomainLogic.Models;
 using SalesRecordCalculator.Models;
 
 namespace SalesRecordCalculator.DomainLogic;
-public class AggregateCalculator : IAggregateCalculator
+
+public interface IAggregateCalculator
+{
+    void AddRecordToTally(SalesRecord record);
+    AggregateResponse CalculateAggregate();
+}
+
+public class AggregateCalculator(IQuickSelectSort SortAlgorithm) : IAggregateCalculator
 {
     private Dictionary<string, int> regionCounts = new Dictionary<string, int>();
     private DateTime firstRecordDate;
@@ -17,8 +25,27 @@ public class AggregateCalculator : IAggregateCalculator
         unitCosts.Add(record.UnitCost);
     }
 
+    public AggregateResponse CalculateAggregate()
+    {
+        var mostCommonRegion = regionCounts.MaxBy(x => x.Value).Key;
+        var daysBetweenFirstAndLastOrder = (int)(lastRecordDate - firstRecordDate).TotalDays;
+        var medianCost = FindMedianUnitCost();
+
+        return new AggregateResponse
+        {
+            MostCommonRegion = mostCommonRegion,
+            FirstOrderDate = firstRecordDate,
+            LastOrderDate = lastRecordDate,
+            DaysBetweenFirstAndLastOrder = daysBetweenFirstAndLastOrder,
+            TotalRevenue = totalRevenue,
+            MedianUnitCost = medianCost
+        };
+    }
+
     private void addRegionToTally(string region)
     {
+        // first time through add region to dictionary
+        // subsequent times increment the count as we encounter the region
         if (regionCounts.ContainsKey(region))
         {
             regionCounts[region]++;
@@ -31,6 +58,8 @@ public class AggregateCalculator : IAggregateCalculator
 
     private void addOrderDateToTally(DateTime orderDate)
     {
+        //first time through set the first and last record date
+        //subsequent times update the first and last record date as needed
         if (firstRecordDate == default)
         {
             firstRecordDate = orderDate;
@@ -52,77 +81,18 @@ public class AggregateCalculator : IAggregateCalculator
     private decimal FindMedianUnitCost()
     {
         decimal median;
+        //if the count is odd, return the middle value
+        //if the count is even, return the average of the two middle values
         if (unitCosts.Count % 2 != 0)
         {
-            median = QuickSelect(unitCosts, unitCosts.Count / 2);
+            median = SortAlgorithm.QuickSelect(unitCosts, unitCosts.Count / 2);
         }
         else
         {
-            var leftMedian = QuickSelect(unitCosts, unitCosts.Count / 2 - 1);
-            var RightMedian = QuickSelect(unitCosts, unitCosts.Count / 2);
+            var leftMedian = SortAlgorithm.QuickSelect(unitCosts, unitCosts.Count / 2 - 1);
+            var RightMedian = SortAlgorithm.QuickSelect(unitCosts, unitCosts.Count / 2);
             median = (leftMedian + RightMedian) / 2;
         }
         return median;
-    }
-
-    private decimal QuickSelect(List<decimal> values, int k)
-    {
-        int left = 0, right = values.Count - 1;
-
-        while (left <= right)
-        {
-            int pivotIndex = Partition(values, left, right);
-
-            if (pivotIndex == k)
-                return values[pivotIndex];
-            else if (pivotIndex < k)
-                left = pivotIndex + 1;
-            else
-                right = pivotIndex - 1;
-        }
-        return -1; // Should never reach here
-    }
-
-    private int Partition(List<decimal> array, int leftIndex, int rightIndex)
-    {
-        decimal pivotValue = array[rightIndex];
-        int partitionIndex = leftIndex;
-
-        for (int comparatorIndex = leftIndex; comparatorIndex < rightIndex; comparatorIndex++)
-        {
-            var comparatorValue = array[comparatorIndex];
-            if (comparatorValue < pivotValue)
-            {
-                SwapValues(array, partitionIndex, comparatorIndex);
-                partitionIndex++;
-            }
-        }
-        SwapValues(array, partitionIndex, rightIndex);
-        return partitionIndex;
-    }
-
-    private void SwapValues(List<decimal> array, int index1, int index2)
-    {
-        decimal temp = array[index1];
-        array[index1] = array[index2];
-        array[index2] = temp;
-    }
-
-
-    public AggregateResponse CalculateAggregate()
-    {
-        var mostCommonRegion = regionCounts.MaxBy(x => x.Value).Key;
-        var daysBetweenFirstAndLastOrder = (int)(lastRecordDate - firstRecordDate).TotalDays;
-        var medianCost = FindMedianUnitCost();
-
-        return new AggregateResponse
-        {
-            MostCommonRegion = mostCommonRegion,
-            FirstOrderDate = firstRecordDate,
-            LastOrderDate = lastRecordDate,
-            DaysBetweenFirstAndLastOrder = daysBetweenFirstAndLastOrder,
-            TotalRevenue = totalRevenue,
-            MedianUnitCost = medianCost
-        };
     }
 }

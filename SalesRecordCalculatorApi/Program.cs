@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using SalesRecordCalculator.Startup;
 
 var builder = WebApplication.CreateBuilder(args);

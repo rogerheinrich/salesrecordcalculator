@@ -1,48 +1,43 @@
 using System.Numerics;
 using CsvHelper.Configuration.Attributes;
 
-namespace SalesRecordCalculator.Models;
+namespace SalesRecordCalculator.DomainLogic.Models;
 
 public class SalesRecord
 {
-    //I chose to use decimals for the representation of the financial data as
-    //I imagined that the precision offered for the financial calculations may
-    //be preferential to the performance benefits of using floats or doubles.
-
-    //Also not knowing how large the order ids could be, I chose to use a BigInteger
-    //to represent them as well, as it can handle arbitrarily large integers.
-
-    //Seeing as well as I am unsure what the data will look like, I chose to make
-    //most of the string fields nullable since they aren't actually required
-    //in any calculations. Had we been storing this data more long term 
-    //I may have chosen to make them required as data cleanliness in long term
-    //storage could be more important, but since we get new data for each request,
-    //flexibility seemed a wiser choice to allow more data to be easily processed. 
-
     public required string Region { get; set; }
+
+    [Optional]
     public string? Country { get; set; }
 
+    [Optional]
     [Name("Item Type")]
     public string? ItemType { get; set; }
 
+    [Optional]
     [Name("Sales Channel")]
     public string? SalesChannel { get; set; }
 
+    [Optional]
     [Name("Order Priority")]
     public string? OrderPriority { get; set; }
 
     [Name("Order Date")]
     public required DateTime OrderDate { get; set; }
 
+    [Optional]
     [Name("Order ID")]
     public BigInteger OrderId { get; set; }
 
+    [Optional]
     [Name("Ship Date")]
     public DateTime ShipDate { get; set; }
 
+    [Optional]
     [Name("Units Sold")]
     public int UnitsSold { get; set; }
 
+    [Optional]
     [Name("Unit Price")]
     public decimal UnitPrice { get; set; }
 
@@ -52,9 +47,11 @@ public class SalesRecord
     [Name("Total Revenue")]
     public required decimal TotalRevenue { get; set; }
 
+    [Optional]
     [Name("Total Cost")]
     public decimal TotalCost { get; set; }
 
+    [Optional]
     [Name("Total Profit")]
     public decimal TotalProfit { get; set; }
 }

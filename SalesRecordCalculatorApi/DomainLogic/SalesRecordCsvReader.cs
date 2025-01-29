@@ -1,11 +1,14 @@
-using System.Data;
-using System.Diagnostics;
 using System.Globalization;
 using CsvHelper;
-using CsvHelper.Configuration;
-using SalesRecordCalculator.Models;
+using SalesRecordCalculator.DomainLogic.Models;
 
 namespace SalesRecordCalculator.DomainLogic;
+
+public interface ISalesRecordReader
+{
+    void ProcessSalesRecords(IFormFile csvFile, Action<SalesRecord> processRecord);
+}
+
 public class SalesRecordCsvReader : ISalesRecordReader
 {
     public void ProcessSalesRecords(IFormFile csvFile, Action<SalesRecord> processRecord)
@@ -32,6 +35,13 @@ public class SalesRecordCsvReader : ISalesRecordReader
                 csv.ReadHeader();
                 while (csv.Read())
                 {
+                    // chose to process records one at a time instead of
+                    // letting the library do the default operation of 
+                    // creating a collection with all data. This will
+                    // allow us to only record the information we
+                    // need for the aggregate calculations. Also
+                    // avoid a secondary iteration of the data to get
+                    // the aggregate values.
                     processRecord(csv.GetRecord<SalesRecord>());
                 }
             }

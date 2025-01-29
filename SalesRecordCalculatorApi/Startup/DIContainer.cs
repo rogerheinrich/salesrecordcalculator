@@ -17,5 +17,6 @@ public static class DIContainer
         // request. They are stateless and can be created and destroyed as needed.
         services.AddTransient<ISalesRecordReader, SalesRecordCsvReader>();
         services.AddTransient<IAggregateCalculator, AggregateCalculator>();
+        services.AddTransient<IQuickSelectSort, QuickSelectSort>();
     }
 }

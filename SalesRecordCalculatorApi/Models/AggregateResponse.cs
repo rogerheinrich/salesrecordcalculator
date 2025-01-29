@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace SalesRecordCalculator.Models;
 
 public class AggregateResponse
