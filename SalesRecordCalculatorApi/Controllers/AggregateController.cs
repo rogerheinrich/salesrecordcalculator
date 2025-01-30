@@ -3,16 +3,23 @@ using SalesRecordCalculator.DomainLogic;
 
 namespace SalesRecordCalculator.Controllers;
 
-[Route("/[controller]")]
-[ApiController]
 /// <summary>
 /// Controller for handling aggregate calculations from csv files.
 /// </summary>
+[Route("/[controller]")]
+[ApiController]
 public class AggregateController(
     ISalesRecordReader salesRecordReader,
     IAggregateCalculator aggregateCalculator
 ) : ControllerBase
 {
+    /// <summary>
+    /// Reads the provided csv file of sales records and calculates 
+    /// the aggregate values for the records.    
+    /// </summary>
+    /// <param name="csvFile">CSV File of sales records to calculate aggregate values from</param>
+    /// <response code="200">Returns an AggregateResponse object containing the calculated aggregate values</response>
+    /// <response code="400">The file failed validation, or information is missing from the request</response>
     [HttpPost("calculatefromcsv")]
     public IActionResult calculateFromCsv(IFormFile csvFile)
     {

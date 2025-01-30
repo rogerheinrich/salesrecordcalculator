@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.OpenApi.Models;
 using SalesRecordCalculator.DomainLogic;
 
@@ -8,12 +9,18 @@ namespace SalesRecordCalculator.Startup;
 /// </summary>
 public static class DIContainer
 {
+    /// <summary>
+    /// Adds the necessary dependencies to the service collection.
+    /// </summary>
     public static void AddDependencies(IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers();
-        services.AddSwaggerGen(c =>
+        services.AddSwaggerGen(options =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "SalesRecordCalculator", Version = "v1" });
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = "SalesRecordCalculator", Version = "v1" });
+
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
         });
 
         // Adding these dependencies as transient because they do not need to hold state across a 

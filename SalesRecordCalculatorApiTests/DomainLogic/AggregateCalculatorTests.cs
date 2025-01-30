@@ -1,5 +1,6 @@
+using Moq;
 using SalesRecordCalculator.DomainLogic;
-using SalesRecordCalculator.Models;
+using SalesRecordCalculator.DomainLogic.Models;
 
 namespace SalesRecordCalculatorApi.DomainLogic
 {
@@ -9,7 +10,8 @@ namespace SalesRecordCalculatorApi.DomainLogic
         public void AddRecordToTally_ShouldUpdateRegionCounts()
         {
             // Arrange
-            var calculator = new AggregateCalculator();
+            var mockSortAlgorithm = new Mock<IQuickSelectSort>();
+            var calculator = new AggregateCalculator(mockSortAlgorithm.Object);
             var record = new SalesRecord { Region = "North", OrderDate = DateTime.Now, TotalRevenue = 100, UnitCost = 10 };
 
             // Act
@@ -24,7 +26,8 @@ namespace SalesRecordCalculatorApi.DomainLogic
         public void AddRecordToTally_ShouldUpdateOrderDates()
         {
             // Arrange
-            var calculator = new AggregateCalculator();
+            var mockSortAlgorithm = new Mock<IQuickSelectSort>();
+            var calculator = new AggregateCalculator(mockSortAlgorithm.Object);
             var firstDate = new DateTime(2023, 1, 1);
             var lastDate = new DateTime(2023, 12, 31);
             var record1 = new SalesRecord { Region = "North", OrderDate = firstDate, TotalRevenue = 100, UnitCost = 10 };
@@ -45,7 +48,8 @@ namespace SalesRecordCalculatorApi.DomainLogic
         public void AddRecordToTally_ShouldUpdateTotalRevenue()
         {
             // Arrange
-            var calculator = new AggregateCalculator();
+            var mockSortAlgorithm = new Mock<IQuickSelectSort>();
+            var calculator = new AggregateCalculator(mockSortAlgorithm.Object);
             var record1 = new SalesRecord { Region = "North", OrderDate = DateTime.Now, TotalRevenue = 100, UnitCost = 10 };
             var record2 = new SalesRecord { Region = "North", OrderDate = DateTime.Now, TotalRevenue = 200, UnitCost = 20 };
 
@@ -62,7 +66,8 @@ namespace SalesRecordCalculatorApi.DomainLogic
         public void CalculateAggregate_ShouldReturnMaxRegion()
         {
             // Arrange
-            var calculator = new AggregateCalculator();
+            var mockSortAlgorithm = new Mock<IQuickSelectSort>();
+            var calculator = new AggregateCalculator(mockSortAlgorithm.Object);
             var record = new SalesRecord { Region = "South", OrderDate = DateTime.Now, TotalRevenue = 100, UnitCost = 10 };
             var record2 = new SalesRecord { Region = "South", OrderDate = DateTime.Now, TotalRevenue = 100, UnitCost = 10 };
             var record3 = new SalesRecord { Region = "North", OrderDate = DateTime.Now, TotalRevenue = 100, UnitCost = 10 };
@@ -81,15 +86,15 @@ namespace SalesRecordCalculatorApi.DomainLogic
         public void CalculateAggregate_ShouldReturnCorrectMedianUnitCost()
         {
             // Arrange
-            var calculator = new AggregateCalculator();
+            var mockSortAlgorithm = new Mock<IQuickSelectSort>();
+            mockSortAlgorithm.Setup(f => f.QuickSelect(
+                It.IsAny<List<decimal>>(),
+                It.IsAny<int>())).Returns((decimal)20.00);
+            var calculator = new AggregateCalculator(mockSortAlgorithm.Object);
             var record1 = new SalesRecord { Region = "North", OrderDate = DateTime.Now, TotalRevenue = 100, UnitCost = 10 };
-            var record2 = new SalesRecord { Region = "North", OrderDate = DateTime.Now, TotalRevenue = 200, UnitCost = 20 };
-            var record3 = new SalesRecord { Region = "North", OrderDate = DateTime.Now, TotalRevenue = 300, UnitCost = 30 };
 
             // Act
             calculator.AddRecordToTally(record1);
-            calculator.AddRecordToTally(record2);
-            calculator.AddRecordToTally(record3);
 
             // Assert
             var response = calculator.CalculateAggregate();
@@ -100,17 +105,20 @@ namespace SalesRecordCalculatorApi.DomainLogic
         public void CalculateAggregate_ShouldReturnCorrectMedianUnitCostForEvenNumberOfRecords()
         {
             // Arrange
-            var calculator = new AggregateCalculator();
+            var mockSortAlgorithm = new Mock<IQuickSelectSort>();
+            new Mock<IQuickSelectSort>();
+            mockSortAlgorithm.SetupSequence(f => f.QuickSelect(
+                It.IsAny<List<decimal>>(),
+                It.IsAny<int>()))
+                .Returns((decimal)20.00)
+                .Returns((decimal)30.00);
+            var calculator = new AggregateCalculator(mockSortAlgorithm.Object);
             var record1 = new SalesRecord { Region = "North", OrderDate = DateTime.Now, TotalRevenue = 100, UnitCost = 10 };
-            var record2 = new SalesRecord { Region = "North", OrderDate = DateTime.Now, TotalRevenue = 200, UnitCost = 20 };
-            var record3 = new SalesRecord { Region = "North", OrderDate = DateTime.Now, TotalRevenue = 300, UnitCost = 30 };
-            var record4 = new SalesRecord { Region = "North", OrderDate = DateTime.Now, TotalRevenue = 400, UnitCost = 40 };
+            var record2 = new SalesRecord { Region = "South", OrderDate = DateTime.Now, TotalRevenue = 100, UnitCost = 10 };
 
             // Act
             calculator.AddRecordToTally(record1);
             calculator.AddRecordToTally(record2);
-            calculator.AddRecordToTally(record3);
-            calculator.AddRecordToTally(record4);
 
             // Assert
             var response = calculator.CalculateAggregate();

@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NUnit.Framework;
 using SalesRecordCalculator.Controllers;
 using SalesRecordCalculator.DomainLogic;
+using SalesRecordCalculator.DomainLogic.Models;
 using SalesRecordCalculator.Models;
-using System;
-using System.IO;
 using System.Text;
 
 namespace SalesRecordCalculatorApi.Controllers

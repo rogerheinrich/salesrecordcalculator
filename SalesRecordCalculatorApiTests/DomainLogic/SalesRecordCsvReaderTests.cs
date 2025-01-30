@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using SalesRecordCalculator.DomainLogic;
-using SalesRecordCalculator.Models;
+using SalesRecordCalculator.DomainLogic.Models;
 
 namespace SalesRecordCalculatorApi.DomainLogic
 {
