@@ -9,14 +9,23 @@ public interface IAggregateCalculator
     AggregateResponse CalculateAggregate();
 }
 
+/// <summary>
+/// Collects data from SalesRecords for use in calculating aggregate values
+/// </summary>
+/// <param name="SortAlgorithm">QuickSelectSort object used to sort unit costs for median calculation</param>
 public class AggregateCalculator(IQuickSelectSort SortAlgorithm) : IAggregateCalculator
 {
     private Dictionary<string, int> regionCounts = new Dictionary<string, int>();
-    private DateTime firstRecordDate;
-    private DateTime lastRecordDate;
+    private DateTime firstOrderDate;
+    private DateTime lastOrderDate;
     private decimal totalRevenue;
     private List<decimal> unitCosts = new List<decimal>();
 
+    /// <summary>
+    /// Extracts information from a SalesRecord and adds relevant data to the tallys
+    /// being kept by the calculator
+    /// </summary>
+    /// <param name="record">Sales record to extract information from</param>
     public void AddRecordToTally(SalesRecord record)
     {
         addRegionToTally(record.Region);
@@ -25,17 +34,21 @@ public class AggregateCalculator(IQuickSelectSort SortAlgorithm) : IAggregateCal
         unitCosts.Add(record.UnitCost);
     }
 
+    /// <summary>
+    /// Calculates the aggregate values from the tally data collected by the calculator
+    /// </summary>
+    /// <returns>An AggregateResponse object holding all the aggregate values</returns>
     public AggregateResponse CalculateAggregate()
     {
         var mostCommonRegion = regionCounts.MaxBy(x => x.Value).Key;
-        var daysBetweenFirstAndLastOrder = (int)(lastRecordDate - firstRecordDate).TotalDays;
+        var daysBetweenFirstAndLastOrder = (int)(lastOrderDate - firstOrderDate).TotalDays;
         var medianCost = FindMedianUnitCost();
 
         return new AggregateResponse
         {
             MostCommonRegion = mostCommonRegion,
-            FirstOrderDate = firstRecordDate,
-            LastOrderDate = lastRecordDate,
+            FirstOrderDate = firstOrderDate,
+            LastOrderDate = lastOrderDate,
             DaysBetweenFirstAndLastOrder = daysBetweenFirstAndLastOrder,
             TotalRevenue = totalRevenue,
             MedianUnitCost = medianCost
@@ -60,20 +73,20 @@ public class AggregateCalculator(IQuickSelectSort SortAlgorithm) : IAggregateCal
     {
         //first time through set the first and last record date
         //subsequent times update the first and last record date as needed
-        if (firstRecordDate == default)
+        if (firstOrderDate == default)
         {
-            firstRecordDate = orderDate;
-            lastRecordDate = orderDate;
+            firstOrderDate = orderDate;
+            lastOrderDate = orderDate;
         }
         else
         {
-            if (orderDate < firstRecordDate)
+            if (orderDate < firstOrderDate)
             {
-                firstRecordDate = orderDate;
+                firstOrderDate = orderDate;
             }
-            else if (orderDate > lastRecordDate)
+            else if (orderDate > lastOrderDate)
             {
-                lastRecordDate = orderDate;
+                lastOrderDate = orderDate;
             }
         }
     }

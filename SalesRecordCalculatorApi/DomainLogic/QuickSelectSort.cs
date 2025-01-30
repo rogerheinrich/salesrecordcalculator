@@ -7,9 +7,23 @@ public interface IQuickSelectSort
     tValueType QuickSelect<tValueType>(List<tValueType> values, int k) where tValueType : INumber<tValueType>;
 }
 
+/// <summary>
+/// QuickSelectSort class for sorting values and finding the kth smallest element
+/// Utilizes an iterative approach to avoid stack overflow with large datasets
+/// Utilizes a random partition selection to avoid worst case performance
+/// </summary>
 public class QuickSelectSort : IQuickSelectSort
 {
     private Random Random = new Random();
+
+    /// <summary>
+    /// Finds the kth smallest element in a list of values
+    /// </summary>
+    /// <typeparam name="tValueType">type of values to sort through</typeparam>
+    /// <param name="values">List of values to sort</param>
+    /// <param name="k">Index in sorted list to return the value for</param>
+    /// <returns>Value of the kth smallest element from the list of values</returns>
+    /// <exception cref="InvalidOperationException">Thrown when K is outside the bounds of the list provided.</exception>
     public tValueType QuickSelect<tValueType>(List<tValueType> values, int k) where tValueType : INumber<tValueType>
     {
         int left = 0, right = values.Count - 1;

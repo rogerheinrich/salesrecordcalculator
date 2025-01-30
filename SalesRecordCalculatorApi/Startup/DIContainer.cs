@@ -3,6 +3,9 @@ using SalesRecordCalculator.DomainLogic;
 
 namespace SalesRecordCalculator.Startup;
 
+/// <summary>
+/// Static class for adding services to the Web Application.
+/// </summary>
 public static class DIContainer
 {
     public static void AddDependencies(IServiceCollection services, IConfiguration configuration)

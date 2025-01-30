@@ -3,6 +3,9 @@ using CsvHelper.Configuration.Attributes;
 
 namespace SalesRecordCalculator.DomainLogic.Models;
 
+/// <summary>
+/// Represents a sales record from a csv file.
+/// </summary>
 public class SalesRecord
 {
     public required string Region { get; set; }

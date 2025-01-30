@@ -9,8 +9,19 @@ public interface ISalesRecordReader
     void ProcessSalesRecords(IFormFile csvFile, Action<SalesRecord> processRecord);
 }
 
+/// <summary>
+/// Reads a csv file and processes each record in the file.
+/// </summary>
 public class SalesRecordCsvReader : ISalesRecordReader
 {
+
+    /// <summary>
+    /// Takes an IFormFile from an httprequest, reads the file as a csv file
+    /// and provides a delegate for processing each record in the file.
+    /// </summary>
+    /// <param name="csvFile">File to process</param>
+    /// <param name="processRecord">Delegate to call for processing each SalesRecord row in the file</param>
+    /// <exception cref="ValidationException">Thrown when the file does not pass validation and cannot be processed.</exception>
     public void ProcessSalesRecords(IFormFile csvFile, Action<SalesRecord> processRecord)
     {
         // check for empty file, return bad request if empty, asp.net web api should
@@ -50,6 +61,5 @@ public class SalesRecordCsvReader : ISalesRecordReader
         {
             throw new ValidationException($"Missing field(s) in csv file {ex.Message}. cannot calculate aggregate data.");
         }
-
     }
 }
